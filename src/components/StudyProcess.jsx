@@ -84,7 +84,7 @@ class StudyProcess extends Component {
         <div>
           <table>
             <tr>
-              <th>stt</th>
+              <th>STT</th>
               <th>Mã Môn học</th>
               <th>Môn học</th>
               <th>Điểm danh</th>

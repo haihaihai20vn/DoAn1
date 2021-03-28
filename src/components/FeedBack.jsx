@@ -193,9 +193,9 @@ class FeedBack extends Component {
           <table>
             <tr>
               <th>ID</th>
-              <th>thời gian</th>
-              <th>người tạo</th>
-              <th>nội dung</th>
+              <th>Thời gian</th>
+              <th>Người tạo</th>
+              <th>Nội dung</th>
               <th></th>
             </tr>
             {this.state.data.map((feedback, index) => {

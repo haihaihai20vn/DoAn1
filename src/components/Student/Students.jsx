@@ -1,13 +1,13 @@
 import React, { Component, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { convertPrice } from "./common.js";
+import {url_student} from "./../API"
 
-import "./../CSS/manageAdmin.css";
-import "./../CSS/main.css";
-import { faFontAwesomeLogoFull } from "@fortawesome/free-solid-svg-icons";
-import { api_class_register } from "./API.js";
+import "./../../CSS/manageAdmin.css";
+import "./../../CSS/main.css";
+import { faEdit, faEye, faFontAwesomeLogoFull, faLock, faTrashAlt, faUserLock } from "@fortawesome/free-solid-svg-icons";
 
-class Schedule extends Component {
+class Students extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -20,7 +20,7 @@ class Schedule extends Component {
   }
 
   componentDidMount() {
-    fetch(api_class_register)
+    fetch(url_student)
       .then((res) => res.json())
       .then((json) => {
         const size = parseInt(json.totalElements / this.state.size) + 1;
@@ -73,21 +73,22 @@ class Schedule extends Component {
         className="container screen"
         style={{ fontSize: "17px" }}
       >
-        {/* {this.state.loading && <div class="loader" id="loader"></div>} */}
+        {this.state.loading && <div class="loader" id="loader"></div>}
         <h2
           className=" text-center head_tag"
           data-wow-duration="1s"
           data-wow-delay="0.1s"
         >
-          Lịch 
+          Thông báo
         </h2>
         <div>
           <table>
             <tr>
-              <th>STT</th>
-              <th>Thời gian</th>
-              <th>Lớp</th>
-              <th>Địa điểm</th>
+              <th>ID</th>
+              <th>Họ tên</th>
+              <th>Ngày sinh</th>
+              <th>Trạng thái</th>
+              <th></th>
             </tr>
             {this.state.data.map((feedback, index) => {
               if (
@@ -96,12 +97,38 @@ class Schedule extends Component {
               )
                 return (
                   <tr style={{ fontSize: "17px" }}>
-                    <td>{index+1}</td>
-                    <td>{feedback.time}</td>
-                    <td>{feedback.subjectName}</td>
-                    <td>{feedback.place.address}</td>
-                    
-
+                    <td
+                      style={{
+                        width: "5%",
+                        fontSize: "17px",
+                      }}
+                    >
+                      {feedback.id}
+                    </td>
+                    <td style={{ width: "15%" }}>{feedback.value}</td>
+                    <td style={{ width: "15%" }}>{feedback.fullName}</td>
+                    <td style={{ width: "15%" }}>{feedback.status}</td>
+                    <td style={{ width: "17%" }}>
+                      <button
+                        style={{ marginRight: "20px" }}
+                        class="btn btn-default btn-rm"
+                        onclick="deleteProduct(${product.id});"
+                      >
+                        <FontAwesomeIcon icon={faLock} className="icon" />
+                      </button>
+                      <button
+                        class="btn btn-default btn-ud"
+                        onClick={() => this.changeModel()}
+                      >
+                        <FontAwesomeIcon icon={faEdit} className="icon" />
+                      </button>
+                      <button
+                        class="btn btn-default btn-dt"
+                        onClick={() => this.setDetail(feedback.id)}
+                      >
+                        <FontAwesomeIcon icon={faEye} className="icon" />
+                      </button>
+                    </td>
                   </tr>
                 );
             })}
@@ -115,4 +142,4 @@ class Schedule extends Component {
   }
 }
 
-export default Schedule;
+export default Students;

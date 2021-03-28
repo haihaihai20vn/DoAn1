@@ -1,15 +1,13 @@
 import React, { Component, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { api_place, token} from "./API"
+import { api_subject} from "./../API"
 
-import "./../CSS/manageAdmin.css";
-import "./../CSS/main.css";
+import "./../../CSS/manageAdmin.css";
+import "./../../CSS/main.css";
 import { faEdit, faEye, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import SubjectForm from "./SubjectForm";
-import PlaceForm from "./PlaceForm";
-import { toast } from "react-toastify";
 
-class Place extends Component {
+class Subject extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -24,7 +22,7 @@ class Place extends Component {
   }
 
   componentDidMount() {
-    fetch(api_place)
+    fetch(api_subject)
       .then((res) => res.json())
       .then((json) => {
         const size = parseInt(json.totalElements / this.state.size) + 1;
@@ -53,8 +51,8 @@ class Place extends Component {
   setData = (data, index) => {
     var newData = Object.assign([], this.state.data);
 
-    console.log("i=" + index);
     if (index === -1) {
+      console.log("***********");
       console.log(newData.length);
       newData = [data, ...newData];
       console.log(data);
@@ -78,23 +76,9 @@ class Place extends Component {
   };
 
   delete = (index, id) => {
-    this.state.loading = true;
-    fetch(api_place + "/" + id, {
-      method: "delete",
-      headers: {
-        "content-type": "application/json",
-        Authorization: token,
-      },
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        if (json.code === 200) {
-          const newState = Object.assign({}, this.state);
-          newState.data.splice(index, 1);
-          this.setState({ ...newState, loading: false });
-          toast.success("Delete Successful");
-        }
-      });
+    const newState = Object.assign({}, this.state);
+    newState.data = newState.data.splice(index, 1);
+    this.setState(newState);
   };
 
   render() {
@@ -129,10 +113,10 @@ class Place extends Component {
         <div>
           <table>
             <tr>
-              <th>STT</th>
-              <th>Địa điểm</th>
-              <th>Ngày tạo</th>
-              <th>Ngày sửa</th>
+              <th>ID</th>
+              <th>Mã môn học</th>
+              <th>Tên môn học</th>
+              <th>Loại môn học</th>
               <th></th>
             </tr>
             {this.state.data.map((feedback, index) => {
@@ -147,25 +131,32 @@ class Place extends Component {
                         width: "5%",
                         fontSize: "17px",
                       }}
+                      onClick={() => this.read(index, feedback.id)}
                     >
-                      {index+1}
+                      {feedback.id}
                     </td>
-                    <td>{feedback.address}</td>
-                    <td>{feedback.createAt}</td>
-                    <td>{feedback.updateAt}</td>
-                    <td style={{ width: "10%" }}>
+                    <td style={{ width: "15%" }}>{feedback.value}</td>
+                    <td>{feedback.name}</td>
+                    <td style={{ width: "15%" }}>{feedback.type}</td>
+                    <td style={{ width: "18%" }}>
                     <button
                       style={{ marginRight: "20px" }}
                       class="btn btn-default btn-rm"
-                      onClick={() => this.delete(index,feedback.id)}
+                      onclick="deleteProduct(${product.id});"
                     >
                       <FontAwesomeIcon icon={faTrashAlt} className="icon" />
                     </button>
                     <button
                       class="btn btn-default btn-ud"
-                      onClick={() => this.changeModel(feedback,index)}
+                      onClick={() => this.changeModel(feedback)}
                     >
                       <FontAwesomeIcon icon={faEdit} className="icon" />
+                    </button>
+                    <button
+                      class="btn btn-default btn-dt"
+                      
+                    >
+                      <FontAwesomeIcon icon={faEye} className="icon" />
                     </button>
                     </td>
                   </tr>
@@ -180,12 +171,12 @@ class Place extends Component {
             <div className="modal" style={{ display: "flex" }}>
               <div class="modal__overlay"></div>
               <div class="modal__body">
-                <PlaceForm
+                <SubjectForm
                   param={this.state.param}
                   eventBack={() => this.changeModel()}
                   setData={this.setData}
                   index={this.state.index}
-                ></PlaceForm>
+                ></SubjectForm>
               </div>
             </div>
           ) : null}
@@ -194,4 +185,4 @@ class Place extends Component {
   }
 }
 
-export default Place;
+export default Subject;

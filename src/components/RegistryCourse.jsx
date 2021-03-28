@@ -110,7 +110,7 @@ class RegistryCourse extends Component {
         <div>
           <table>
             <tr>
-              <th>stt</th>
+              <th>STT</th>
               <th>Ngày đăng kí</th>
               <th>Ngày cập nhật</th>
               <th>Mã sinh viên</th>

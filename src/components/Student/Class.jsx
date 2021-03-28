@@ -1,20 +1,14 @@
 import React, { Component, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { convertPrice } from "./common.js";
+import {api_class, url_class} from "./../API"
 
-import "./../CSS/manageAdmin.css";
-import "./../CSS/main.css";
-import {
-  faEdit,
-  faEye,
-  faFontAwesomeLogoFull,
-  faLock,
-  faTrash,
-  faTrashAlt,
-} from "@fortawesome/free-solid-svg-icons";
-import { api_user } from "./API.js";
+import "./../../CSS/manageAdmin.css";
+import "./../../CSS/main.css";
+import { faCheckCircle, faEdit, faEye, faTrashAlt, faWindowClose } from "@fortawesome/free-solid-svg-icons";
+import ClassDetail from "./../ClassDetail";
 
-class User extends Component {
+class Class extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -23,26 +17,35 @@ class User extends Component {
       size: 10,
       sizePage: 0,
       data: [],
+      isDetail: false,
+      idDetail: -1,
+      
     };
   }
 
   componentDidMount() {
-    fetch(api_user)
+    fetch(url_class)
       .then((res) => res.json())
       .then((json) => {
         const size = parseInt(json.totalElements / this.state.size) + 1;
         console.log(json.data);
         this.setState({
-          ...this.state,
           loading: false,
           data: json.data,
-          detail: new Array(json.data.length).fill(true),
+          isDetail: false,
           sizePage: size,
         });
       });
 
     console.log("call api product");
   }
+
+  detail = (id) => {
+    var newState = Object.assign({}, this.state);
+    newState.isDetail = true;
+    newState.idDetail = id;
+    this.setState(newState);
+  };
 
   setPage = (index) => {
     const newState = Object.assign({}, this.state);
@@ -62,6 +65,10 @@ class User extends Component {
     this.setState(newState);
   };
 
+  back = () => {
+    this.setState({ ...this.state, isDetail: false });
+  };
+
   render() {
     var listPage = [];
     for (let i = 0; i < 5; i++) {
@@ -74,6 +81,12 @@ class User extends Component {
       );
     }
 
+    if(this.state.isDetail){
+      return (
+        <ClassDetail id={this.state.idDetail} back={() => this.back()} ></ClassDetail>
+      );
+    }
+    else
     return (
       <div
         id="screen4"
@@ -86,24 +99,19 @@ class User extends Component {
           data-wow-duration="1s"
           data-wow-delay="0.1s"
         >
-          Quản lý tài khoản
+          Lớp
         </h2>
         <div>
-          <table style={{overflow:"scroll"}}>
+          <table>
             <tr>
-              <th>stt</th>
               <th>ID</th>
-              <th>Tên</th>
-              <th>Username</th>
+              <th>Tên lớp</th>
+              <th>Khóa học</th>
+              <th>Giáo viên</th>
+              <th>Băt đầu</th>
+              <th>Kết thúc</th>
+              <th>Số lượng đăng kí</th>
               <th>Trạng thái</th>
-              <th>Vai trò</th>
-              <th>Giới tính</th>
-              <th>Tuổi</th>
-              <th>Địa chỉ</th>
-              <th>SĐT</th>
-              <th>Email</th>
-              <th>Ngày tạo</th>
-              <th>Ngày cập nhật</th>
               <th></th>
             </tr>
             {this.state.data.map((feedback, index) => {
@@ -113,42 +121,38 @@ class User extends Component {
               )
                 return (
                   <tr style={{ fontSize: "17px" }}>
-                    <td>{index + 1}</td>
                     <td>{feedback.id}</td>
-                    <td>{feedback.fullName}</td>
-                    <td>{feedback.username}</td>
+                    <td style={{ width: "15%" }}>{feedback.subject.name}</td>
+                    <td>{feedback.subject.name}</td>
+                    <td>{feedback.teacher}</td>
+                    <td>{feedback.start}</td>
+                    <td>{feedback.end}</td>
+                    <td>{feedback.numberRegister}</td>
                     <td>{feedback.status}</td>
-                    <td>{feedback.role}</td>
-                    <td>{feedback.gender}</td>
-                    <td>{feedback.age}</td>
-                    <td>{feedback.address}</td>
-                    <td>{feedback.phoneNumber}</td>
-                    <td>{feedback.email}</td>
-                    <td>{feedback.createAt}</td>
-                    <td>{feedback.updateAt}</td>
                     <td style={{ width: "17%" }}>
-                    <button
+                      <button
+                        style={{ marginRight: "20px" }}
                         class="btn btn-default btn-rm"
                         onclick="deleteProduct(${product.id});"
                       >
-                        <FontAwesomeIcon icon={faTrashAlt} className="icon" />
-                      </button>
-                      <button
-                        class="btn btn-default btn-mangeto"
-                      >
-                        <FontAwesomeIcon icon={faLock} className="icon" />
+                        <FontAwesomeIcon icon={faWindowClose} className="icon" />
                       </button>
                       <button
                         class="btn btn-default btn-ud"
-                        onClick={() => this.changeModel()}
+                        // onClick={() => this.changeModel()}
                       >
                         <FontAwesomeIcon icon={faEdit} className="icon" />
                       </button>
                       <button
                         class="btn btn-default btn-dt"
-                        onClick={() => this.setDetail(feedback.id)}
+                        onClick={() => this.detail(feedback.id)}
                       >
                         <FontAwesomeIcon icon={faEye} className="icon" />
+                      </button>
+                      <button
+                        class="btn btn-default btn-ck"
+                      >
+                        <FontAwesomeIcon icon={faCheckCircle} className="icon" />
                       </button>
                     </td>
                   </tr>
@@ -164,4 +168,4 @@ class User extends Component {
   }
 }
 
-export default User;
+export default Class;
